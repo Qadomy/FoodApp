@@ -1,6 +1,7 @@
 package com.qadomy.foodapp.View.Category;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.qadomy.foodapp.Adapter.RecyclerViewMealByCategory;
 import com.qadomy.foodapp.Model.Meals;
 import com.qadomy.foodapp.R;
 import com.qadomy.foodapp.Utils;
+import com.qadomy.foodapp.View.Details.DetailsActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -28,6 +30,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.qadomy.foodapp.View.Home.HomeActivity.EXTRA_DETAIL;
 
 public class CategoryFragment extends Fragment implements CategoryView {
 
@@ -96,10 +100,15 @@ public class CategoryFragment extends Fragment implements CategoryView {
         adapter.notifyDataSetChanged();
 
         adapter.setOnItemClickListener((view, position) -> {
-            showMessage("meal: " + meals.get(position).getStrMeal());
+            //showMessage("meal: " + meals.get(position).getStrMeal());
+
+            TextView mealName = view.findViewById(R.id.mealName);
+            // make intent of meal name from edit text view and send it to Details Activity
+            Intent intent = new Intent(getActivity(), DetailsActivity.class);
+            intent.putExtra(EXTRA_DETAIL, mealName.getText().toString());
+            startActivity(intent);
+
         });
-
-
     }
 
     @Override

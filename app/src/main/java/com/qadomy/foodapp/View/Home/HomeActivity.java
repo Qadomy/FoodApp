@@ -3,6 +3,7 @@ package com.qadomy.foodapp.View.Home;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import com.qadomy.foodapp.Model.Meals;
 import com.qadomy.foodapp.R;
 import com.qadomy.foodapp.Utils;
 import com.qadomy.foodapp.View.Category.CategoryActivity;
+import com.qadomy.foodapp.View.Details.DetailsActivity;
 
 import java.io.Serializable;
 import java.util.List;
@@ -28,16 +30,17 @@ public class HomeActivity extends AppCompatActivity implements HomeView {
 
     public static final String EXTRA_CATEGORY = "category";
     public static final String EXTRA_POSITION = "position";
+    public static final String EXTRA_DETAIL = "detail";
 
-    private Toast previousToast;
-    private HomePresenter presenter;
-
-    //******//
-
+    //*******//
     @BindView(R.id.viewpager)
     ViewPager viewPagerMeal;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerViewCategory;
+
+    //******//
+    private Toast previousToast;
+    private HomePresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,20 +68,20 @@ public class HomeActivity extends AppCompatActivity implements HomeView {
 
     @Override
     public void setMeal(List<Meals.Meal> meal) {
-        /*
-        // we can check meal result
-        for (Meals.Meal meal1Result : meal) {
-            Log.w("meal name: ", meal1Result.getStrMeal());
-        }
-        */
-
         ViewPagerHeaderAdapter headerAdapter = new ViewPagerHeaderAdapter(meal, this);
         viewPagerMeal.setAdapter(headerAdapter);
         viewPagerMeal.setPadding(20, 0, 150, 0);
         headerAdapter.notifyDataSetChanged();
 
-        headerAdapter.setOnItemClickListener((v, position) -> {
-            showMessage(meal.get(position).getStrMeal());
+        headerAdapter.setOnItemClickListener((view, position) -> {
+            //showMessage(meal.get(position).getStrMeal());
+
+            TextView mealName = view.findViewById(R.id.mealName);
+            // make intent of meal name from edit text view and send it to Details Activity
+            Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
+            intent.putExtra(EXTRA_DETAIL, mealName.getText().toString());
+            startActivity(intent);
+
         });
     }
 
@@ -94,9 +97,9 @@ public class HomeActivity extends AppCompatActivity implements HomeView {
         homeAdapter.notifyDataSetChanged();
 
         homeAdapter.setOnItemClickListener((view, position) -> {
-            showMessage(category.get(position).getStrCategory());
+            //showMessage(category.get(position).getStrCategory());
             Intent intent = new Intent(this, CategoryActivity.class);
-            intent.putExtra(EXTRA_CATEGORY, (Serializable)category);
+            intent.putExtra(EXTRA_CATEGORY, (Serializable) category);
             intent.putExtra(EXTRA_POSITION, position);
             startActivity(intent);
         });
@@ -106,7 +109,6 @@ public class HomeActivity extends AppCompatActivity implements HomeView {
     public void onErrorLodaing(String message) {
         Utils.showDialogMessage(this, "Title", message);
     }
-
 
     // method for display Toast message
     public void showMessage(String msg) {
