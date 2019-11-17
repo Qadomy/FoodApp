@@ -18,7 +18,7 @@ public class DetailsPresenter {
         this.view = view;
     }
 
-    void fgetMealById(String mealName) {
+    void getMealById(String mealName) {
         view.showLoading();
         Utils.getApi().getMealByName(mealName).enqueue(new Callback<Meals>() {
             @Override
